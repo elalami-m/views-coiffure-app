@@ -1,4 +1,4 @@
-import { FlatList, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import { products } from "../data/productList";
 import Product from "../components/Product";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -10,46 +10,57 @@ interface ProductTypeWithActiveState extends ProductType {
 }
 
 const ProductsList = () => {
-  const [procutsData, setProductsData] = useState<
+  const [productsData, setProductsData] = useState<
     Array<ProductTypeWithActiveState>
   >([...products] as ProductTypeWithActiveState[]);
 
-  const handleOnProdcutPress = (id: number) => {
-    setProductsData((procutsData) =>
-      procutsData.map((product) => {
+  const handleOnProductPress = (id: number) => {
+    setProductsData((productsData) =>
+      productsData.map((product) => {
         if (product.id === id) return { ...product, active: true };
         return { ...product, active: false };
       })
     );
   };
+
   return (
-    <SafeAreaView style={{ flex: 1, width: "100%" }}>
-      {/* {.map(() => {
-        return <Product />;
-      })} */}
+    <View style={styles.container}>
       <FlatList
-        ItemSeparatorComponent={() => <View style={{ height: 20 }}></View>}
-        data={procutsData}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        data={productsData}
         renderItem={({ item: product }) => (
           <Product
             productData={product}
-            onPress={() => handleOnProdcutPress(product.id)}
+            onPress={() => handleOnProductPress(product.id)}
             active={product.active}
           />
         )}
-        style={{
-          flex: 1,
-          paddingHorizontal: 10,
-            //   paddingVertical: 20,
-          paddingBottom:20
-              }}
-              contentContainerStyle={{
-                  paddingVertical:10
-              }}
+        style={styles.flatList}
+        contentContainerStyle={styles.contentContainer}
         keyExtractor={(_item, index) => index.toString()}
+        showsVerticalScrollIndicator={false}
       />
-    </SafeAreaView>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: "100%",
+    paddingTop: 35,
+  },
+  separator: {
+    height: 20,
+  },
+  flatList: {
+    flex: 1,
+    paddingHorizontal: 10,
+    paddingBottom: 20,
+  },
+  contentContainer: {
+    paddingVertical: 10,
+  },
+});
 
 export default ProductsList;
